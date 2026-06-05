@@ -1,0 +1,771 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Escalia — Panel de Asesores</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    :root {
+      --bg-primary: #1a1d23;
+      --bg-secondary: #22262e;
+      --bg-tertiary: #2a2f38;
+      --bg-hover: #323842;
+      --text-primary: #e4e6eb;
+      --text-secondary: #9ca3af;
+      --text-muted: #6b7280;
+      --accent: #6366f1;
+      --accent-hover: #818cf8;
+      --green: #22c55e;
+      --green-dark: #15803d;
+      --blue: #3b82f6;
+      --orange: #f59e0b;
+      --border: #374151;
+      --user-msg: #374151;
+      --bot-msg: #1e3a5f;
+      --agent-msg: #15803d;
+      --scrollbar: #4b5563;
+      --scrollbar-hover: #6b7280;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      height: 100vh;
+      overflow: hidden;
+    }
+
+    /* --- Layout principal --- */
+    .app {
+      display: flex;
+      height: 100vh;
+    }
+
+    /* --- Sidebar --- */
+    .sidebar {
+      width: 360px;
+      min-width: 360px;
+      background: var(--bg-secondary);
+      border-right: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+    }
+
+    .sidebar-header {
+      padding: 20px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .sidebar-header .logo {
+      width: 36px;
+      height: 36px;
+      background: var(--accent);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 16px;
+    }
+
+    .sidebar-header h1 {
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+
+    .sidebar-header .subtitle {
+      font-size: 12px;
+      color: var(--text-secondary);
+    }
+
+    .conversation-list {
+      flex: 1;
+      overflow-y: auto;
+    }
+
+    .conversation-item {
+      display: flex;
+      align-items: center;
+      padding: 14px 20px;
+      cursor: pointer;
+      border-bottom: 1px solid var(--border);
+      transition: background 0.15s;
+      gap: 12px;
+    }
+
+    .conversation-item:hover {
+      background: var(--bg-hover);
+    }
+
+    .conversation-item.active {
+      background: var(--bg-tertiary);
+      border-left: 3px solid var(--accent);
+      padding-left: 17px;
+    }
+
+    .conversation-avatar {
+      width: 40px;
+      height: 40px;
+      min-width: 40px;
+      background: var(--bg-tertiary);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+    }
+
+    .conversation-info {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .conversation-phone {
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--text-primary);
+    }
+
+    .conversation-preview {
+      font-size: 12px;
+      color: var(--text-secondary);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      margin-top: 2px;
+    }
+
+    .conversation-meta {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 6px;
+    }
+
+    .conversation-time {
+      font-size: 11px;
+      color: var(--text-muted);
+    }
+
+    .badge-waiting {
+      font-size: 10px;
+      padding: 2px 8px;
+      background: var(--orange);
+      color: #000;
+      border-radius: 10px;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+
+    .unread-dot {
+      width: 10px;
+      height: 10px;
+      min-width: 10px;
+      background: var(--green);
+      border-radius: 50%;
+    }
+
+    /* --- Chat area --- */
+    .chat-area {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      background: var(--bg-primary);
+    }
+
+    .chat-header {
+      padding: 16px 24px;
+      border-bottom: 1px solid var(--border);
+      background: var(--bg-secondary);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .chat-header-avatar {
+      width: 36px;
+      height: 36px;
+      background: var(--bg-tertiary);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+    }
+
+    .chat-header-info h2 {
+      font-size: 15px;
+      font-weight: 600;
+    }
+
+    .chat-header-info .status {
+      font-size: 12px;
+      color: var(--text-secondary);
+    }
+
+    .chat-messages {
+      flex: 1;
+      overflow-y: auto;
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .chat-empty {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      gap: 12px;
+      color: var(--text-muted);
+    }
+
+    .chat-empty .icon {
+      font-size: 48px;
+      opacity: 0.5;
+    }
+
+    .chat-empty p {
+      font-size: 15px;
+    }
+
+    /* --- Mensajes --- */
+    .message {
+      max-width: 70%;
+      padding: 10px 14px;
+      border-radius: 12px;
+      font-size: 14px;
+      line-height: 1.5;
+      word-wrap: break-word;
+      position: relative;
+    }
+
+    .message.user {
+      align-self: flex-start;
+      background: var(--user-msg);
+      border-bottom-left-radius: 4px;
+    }
+
+    .message.bot {
+      align-self: flex-start;
+      background: var(--bot-msg);
+      border-bottom-left-radius: 4px;
+    }
+
+    .message.agent {
+      align-self: flex-end;
+      background: var(--agent-msg);
+      border-bottom-right-radius: 4px;
+    }
+
+    .message-label {
+      font-size: 11px;
+      font-weight: 600;
+      margin-bottom: 4px;
+      opacity: 0.8;
+    }
+
+    .message.user .message-label { color: #9ca3af; }
+    .message.bot .message-label { color: #60a5fa; }
+    .message.agent .message-label { color: #86efac; }
+
+    .message-time {
+      font-size: 10px;
+      color: rgba(255,255,255,0.45);
+      margin-top: 4px;
+      text-align: right;
+    }
+
+    .message-body {
+      white-space: pre-wrap;
+    }
+
+    /* --- Input area --- */
+    .chat-input-area {
+      padding: 16px 24px;
+      border-top: 1px solid var(--border);
+      background: var(--bg-secondary);
+      display: flex;
+      gap: 12px;
+      align-items: flex-end;
+    }
+
+    .chat-input-area textarea {
+      flex: 1;
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 12px 16px;
+      color: var(--text-primary);
+      font-size: 14px;
+      font-family: inherit;
+      resize: none;
+      min-height: 44px;
+      max-height: 120px;
+      line-height: 1.4;
+      outline: none;
+      transition: border-color 0.15s;
+    }
+
+    .chat-input-area textarea:focus {
+      border-color: var(--accent);
+    }
+
+    .chat-input-area textarea::placeholder {
+      color: var(--text-muted);
+    }
+
+    .btn-send {
+      width: 44px;
+      height: 44px;
+      min-width: 44px;
+      background: var(--accent);
+      border: none;
+      border-radius: 12px;
+      color: white;
+      font-size: 18px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.15s;
+    }
+
+    .btn-send:hover {
+      background: var(--accent-hover);
+    }
+
+    .btn-send:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+    }
+
+    /* --- Scrollbar personalizado --- */
+    ::-webkit-scrollbar {
+      width: 6px;
+    }
+
+    ::-webkit-scrollbar-track {
+      background: transparent;
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: var(--scrollbar);
+      border-radius: 3px;
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+      background: var(--scrollbar-hover);
+    }
+
+    /* --- Status indicator --- */
+    .ws-status {
+      padding: 8px 20px;
+      font-size: 11px;
+      text-align: center;
+      border-top: 1px solid var(--border);
+    }
+
+    .ws-status.connected {
+      color: var(--green);
+      background: rgba(34, 197, 94, 0.08);
+    }
+
+    .ws-status.disconnected {
+      color: #ef4444;
+      background: rgba(239, 68, 68, 0.08);
+    }
+
+    /* --- Responsive --- */
+    @media (max-width: 768px) {
+      .sidebar {
+        width: 100%;
+        min-width: 100%;
+      }
+
+      .chat-area {
+        display: none;
+      }
+
+      .app.chat-open .sidebar {
+        display: none;
+      }
+
+      .app.chat-open .chat-area {
+        display: flex;
+      }
+
+      .chat-header .btn-back {
+        display: block;
+      }
+    }
+
+    .btn-back {
+      display: none;
+      background: none;
+      border: none;
+      color: var(--text-secondary);
+      font-size: 20px;
+      cursor: pointer;
+      padding: 4px 8px;
+    }
+  </style>
+</head>
+<body>
+  <div class="app" id="app">
+    <!-- Sidebar: lista de conversaciones -->
+    <aside class="sidebar">
+      <div class="sidebar-header">
+        <div class="logo">E</div>
+        <div>
+          <h1>Escalia</h1>
+          <div class="subtitle">Panel de Asesores</div>
+        </div>
+      </div>
+      <div class="conversation-list" id="conversationList">
+        <!-- Las conversaciones se renderizan dinamicamente -->
+      </div>
+      <div class="ws-status disconnected" id="wsStatus">Desconectado</div>
+    </aside>
+
+    <!-- Chat area -->
+    <main class="chat-area" id="chatArea">
+      <div class="chat-empty" id="chatEmpty">
+        <div class="icon">💬</div>
+        <p>Selecciona una conversacion para comenzar</p>
+      </div>
+
+      <!-- Header del chat (oculto hasta seleccionar conversacion) -->
+      <div class="chat-header" id="chatHeader" style="display:none;">
+        <button class="btn-back" id="btnBack" onclick="goBack()">←</button>
+        <div class="chat-header-avatar">👤</div>
+        <div class="chat-header-info">
+          <h2 id="chatPhone">—</h2>
+          <div class="status" id="chatStatus">—</div>
+        </div>
+      </div>
+
+      <!-- Mensajes -->
+      <div class="chat-messages" id="chatMessages" style="display:none;"></div>
+
+      <!-- Input -->
+      <div class="chat-input-area" id="chatInputArea" style="display:none;">
+        <textarea
+          id="messageInput"
+          placeholder="Escribe un mensaje..."
+          rows="1"
+          onkeydown="handleInputKeydown(event)"
+          oninput="autoResize(this)"
+        ></textarea>
+        <button class="btn-send" id="btnSend" onclick="sendMessage()" disabled>➤</button>
+      </div>
+    </main>
+  </div>
+
+  <script>
+    // --- Estado de la aplicacion ---
+    let conversations = {};     // { phone: { messages: [], transferred, transferredAt } }
+    let selectedPhone = null;   // Conversacion actualmente seleccionada
+    let ws = null;              // Conexion WebSocket
+    let unreadPhones = new Set(); // Telefonos con mensajes sin leer
+
+    // --- Inicializacion ---
+    document.addEventListener('DOMContentLoaded', () => {
+      loadConversations();
+      connectWebSocket();
+
+      // Habilitar/deshabilitar boton enviar segun contenido del textarea
+      document.getElementById('messageInput').addEventListener('input', () => {
+        document.getElementById('btnSend').disabled =
+          !document.getElementById('messageInput').value.trim();
+      });
+    });
+
+    // --- Cargar conversaciones existentes via API ---
+    async function loadConversations() {
+      try {
+        const res = await fetch('/api/conversations');
+        conversations = await res.json();
+        renderConversationList();
+      } catch (err) {
+        console.error('Error cargando conversaciones:', err);
+      }
+    }
+
+    // --- WebSocket ---
+    function connectWebSocket() {
+      const protocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
+      ws = new WebSocket(`${protocol}//${location.host}`);
+
+      ws.onopen = () => {
+        const el = document.getElementById('wsStatus');
+        el.textContent = 'Conectado';
+        el.className = 'ws-status connected';
+      };
+
+      ws.onclose = () => {
+        const el = document.getElementById('wsStatus');
+        el.textContent = 'Desconectado — reconectando...';
+        el.className = 'ws-status disconnected';
+        // Reconectar despues de 3 segundos
+        setTimeout(connectWebSocket, 3000);
+      };
+
+      ws.onerror = () => {
+        ws.close();
+      };
+
+      ws.onmessage = (event) => {
+        const msg = JSON.parse(event.data);
+        handleWSMessage(msg);
+      };
+    }
+
+    // --- Manejar mensajes WebSocket entrantes ---
+    function handleWSMessage(msg) {
+      if (msg.type === 'new_message') {
+        const { phone, message } = msg.data;
+
+        // Asegurar que la conversacion existe en el estado local
+        if (!conversations[phone]) {
+          conversations[phone] = { messages: [], transferred: false, transferredAt: null };
+        }
+
+        conversations[phone].messages.push(message);
+
+        // Si es un mensaje del usuario y no estamos viendo esa conversacion, marcar como no leido
+        if (message.from === 'user' && phone !== selectedPhone) {
+          unreadPhones.add(phone);
+        }
+
+        renderConversationList();
+
+        // Si estamos viendo esta conversacion, renderizar el mensaje nuevo
+        if (phone === selectedPhone) {
+          appendMessage(message);
+          scrollToBottom();
+        }
+      }
+
+      if (msg.type === 'conversation_update') {
+        const { phone, transferred, transferredAt } = msg.data;
+
+        if (!conversations[phone]) {
+          conversations[phone] = { messages: [], transferred: false, transferredAt: null };
+        }
+
+        conversations[phone].transferred = transferred;
+        conversations[phone].transferredAt = transferredAt;
+        unreadPhones.add(phone);
+
+        renderConversationList();
+
+        // Si estamos viendo esta conversacion, actualizar el header
+        if (phone === selectedPhone) {
+          updateChatHeader(phone);
+        }
+      }
+    }
+
+    // --- Renderizar lista de conversaciones en la sidebar ---
+    function renderConversationList() {
+      const container = document.getElementById('conversationList');
+      const phones = Object.keys(conversations);
+
+      // Ordenar: transferidas primero, luego por ultimo mensaje
+      phones.sort((a, b) => {
+        const aConv = conversations[a];
+        const bConv = conversations[b];
+
+        // Transferidas primero
+        if (aConv.transferred && !bConv.transferred) return -1;
+        if (!aConv.transferred && bConv.transferred) return 1;
+
+        // Luego por ultimo mensaje (mas reciente primero)
+        const aLast = aConv.messages[aConv.messages.length - 1]?.timestamp || '';
+        const bLast = bConv.messages[bConv.messages.length - 1]?.timestamp || '';
+        return bLast.localeCompare(aLast);
+      });
+
+      container.innerHTML = phones.map(phone => {
+        const conv = conversations[phone];
+        const lastMsg = conv.messages[conv.messages.length - 1];
+        const preview = lastMsg ? lastMsg.body.substring(0, 50) + (lastMsg.body.length > 50 ? '...' : '') : 'Sin mensajes';
+        const time = lastMsg ? formatTime(lastMsg.timestamp) : '';
+        const isActive = phone === selectedPhone;
+        const isUnread = unreadPhones.has(phone);
+        const cleanPhone = phone.replace('whatsapp:', '');
+
+        return `
+          <div class="conversation-item ${isActive ? 'active' : ''}"
+               onclick="selectConversation('${encodeURIComponent(phone)}')">
+            <div class="conversation-avatar">👤</div>
+            <div class="conversation-info">
+              <div class="conversation-phone">${escapeHtml(cleanPhone)}</div>
+              <div class="conversation-preview">${escapeHtml(preview)}</div>
+            </div>
+            <div class="conversation-meta">
+              <div class="conversation-time">${time}</div>
+              ${conv.transferred ? '<span class="badge-waiting">Esperando asesor</span>' : ''}
+              ${isUnread ? '<div class="unread-dot"></div>' : ''}
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    // --- Seleccionar una conversacion ---
+    function selectConversation(encodedPhone) {
+      const phone = decodeURIComponent(encodedPhone);
+      selectedPhone = phone;
+      unreadPhones.delete(phone);
+
+      // Mostrar elementos del chat
+      document.getElementById('chatEmpty').style.display = 'none';
+      document.getElementById('chatHeader').style.display = 'flex';
+      document.getElementById('chatMessages').style.display = 'flex';
+      document.getElementById('chatInputArea').style.display = 'flex';
+
+      // Responsive: mostrar chat en mobile
+      document.getElementById('app').classList.add('chat-open');
+
+      updateChatHeader(phone);
+      renderMessages(phone);
+      renderConversationList();
+
+      // Foco en el input
+      document.getElementById('messageInput').focus();
+    }
+
+    // --- Actualizar header del chat ---
+    function updateChatHeader(phone) {
+      const conv = conversations[phone];
+      const cleanPhone = phone.replace('whatsapp:', '');
+      document.getElementById('chatPhone').textContent = cleanPhone;
+
+      if (conv?.transferred) {
+        document.getElementById('chatStatus').textContent = 'Transferido a asesor — esperando respuesta';
+        document.getElementById('chatStatus').style.color = '#f59e0b';
+      } else {
+        document.getElementById('chatStatus').textContent = 'Atendido por bot';
+        document.getElementById('chatStatus').style.color = '#9ca3af';
+      }
+    }
+
+    // --- Renderizar todos los mensajes de una conversacion ---
+    function renderMessages(phone) {
+      const container = document.getElementById('chatMessages');
+      const conv = conversations[phone];
+      if (!conv) return;
+
+      container.innerHTML = conv.messages.map(msg => messageHTML(msg)).join('');
+      scrollToBottom();
+    }
+
+    // --- Agregar un solo mensaje al chat (sin re-renderizar todo) ---
+    function appendMessage(message) {
+      const container = document.getElementById('chatMessages');
+      container.insertAdjacentHTML('beforeend', messageHTML(message));
+    }
+
+    // --- Generar HTML de un mensaje ---
+    function messageHTML(msg) {
+      const labels = { user: 'Usuario', bot: 'Bot', agent: 'Asesor' };
+      return `
+        <div class="message ${msg.from}">
+          <div class="message-label">${labels[msg.from] || msg.from}</div>
+          <div class="message-body">${escapeHtml(msg.body)}</div>
+          <div class="message-time">${formatTime(msg.timestamp)}</div>
+        </div>
+      `;
+    }
+
+    // --- Enviar mensaje del asesor ---
+    async function sendMessage() {
+      const input = document.getElementById('messageInput');
+      const message = input.value.trim();
+
+      if (!message || !selectedPhone) return;
+
+      const btn = document.getElementById('btnSend');
+      btn.disabled = true;
+      input.value = '';
+      input.style.height = 'auto';
+
+      try {
+        const res = await fetch(`/api/conversations/${encodeURIComponent(selectedPhone)}/messages`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ message }),
+        });
+
+        if (!res.ok) {
+          const err = await res.json();
+          alert('Error enviando mensaje: ' + (err.error || 'desconocido'));
+        }
+      } catch (err) {
+        console.error('Error enviando mensaje:', err);
+        alert('Error de conexion al enviar el mensaje');
+      }
+
+      btn.disabled = !input.value.trim();
+      input.focus();
+    }
+
+    // --- Handlers de UI ---
+    function handleInputKeydown(e) {
+      // Enter sin shift envia el mensaje
+      if (e.key === 'Enter' && !e.shiftKey) {
+        e.preventDefault();
+        sendMessage();
+      }
+    }
+
+    function autoResize(el) {
+      el.style.height = 'auto';
+      el.style.height = Math.min(el.scrollHeight, 120) + 'px';
+    }
+
+    function goBack() {
+      selectedPhone = null;
+      document.getElementById('app').classList.remove('chat-open');
+      document.getElementById('chatEmpty').style.display = 'flex';
+      document.getElementById('chatHeader').style.display = 'none';
+      document.getElementById('chatMessages').style.display = 'none';
+      document.getElementById('chatInputArea').style.display = 'none';
+    }
+
+    function scrollToBottom() {
+      const container = document.getElementById('chatMessages');
+      requestAnimationFrame(() => {
+        container.scrollTop = container.scrollHeight;
+      });
+    }
+
+    // --- Utilidades ---
+    function formatTime(isoString) {
+      if (!isoString) return '';
+      const d = new Date(isoString);
+      return d.toLocaleTimeString('es-AR', { hour: '2-digit', minute: '2-digit' });
+    }
+
+    function escapeHtml(text) {
+      const div = document.createElement('div');
+      div.textContent = text;
+      return div.innerHTML;
+    }
+  </script>
+</body>
+</html>

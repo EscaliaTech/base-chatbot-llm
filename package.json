@@ -1,0 +1,18 @@
+{
+  "name": "escalia-whatsapp-bot",
+  "version": "1.0.0",
+  "description": "Bot de WhatsApp para Escalia - empresa de paqueteria y envios",
+  "type": "module",
+  "main": "src/index.js",
+  "scripts": {
+    "start": "node src/index.js",
+    "dev": "node --watch src/index.js"
+  },
+  "dependencies": {
+    "dotenv": "^16.4.0",
+    "express": "^4.21.0",
+    "groq-sdk": "^0.8.0",
+    "twilio": "^5.4.0",
+    "ws": "^8.21.0"
+  }
+}
