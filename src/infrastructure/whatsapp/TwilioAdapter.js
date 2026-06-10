@@ -37,6 +37,7 @@ export const TwilioAdapter = {
       from: payload.From,
       body: payload.Body,
       messageId: payload.MessageSid,
+      profileName: payload.ProfileName || null,
     }
   },
 

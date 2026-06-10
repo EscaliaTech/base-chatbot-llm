@@ -60,7 +60,7 @@ export function createWorker(deps) {
   const worker = new Worker(
     'whatsapp-messages',
     async (job) => {
-      const { from, body, messageId } = job.data
+      const { from, body, messageId, profileName } = job.data
 
       // --- Step 1: Deduplication ---
       if (messageId) {
@@ -71,12 +71,16 @@ export function createWorker(deps) {
         }
       }
 
-      // --- Step 2: Find or create Contact ---
+      // --- Step 2: Find or create Contact, always sync ProfileName from Twilio ---
       let contact = await contactRepo.findByPhone(from)
       if (!contact) {
-        const newContact = new Contact({ phone: from })
+        const newContact = new Contact({ phone: from, name: profileName ?? null })
         contact = await contactRepo.save(newContact)
-        console.log(`[Worker] New contact created: ${from}`)
+        console.log(`[Worker] New contact created: ${from} (${profileName ?? 'no name'})`)
+      } else if (profileName && contact.name !== profileName) {
+        contact.name = profileName
+        contact = await contactRepo.save(contact)
+        console.log(`[Worker] Contact name updated: ${from} → ${profileName}`)
       }
 
       // --- Step 3: Find or create Conversation ---

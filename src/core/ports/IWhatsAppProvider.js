@@ -3,6 +3,7 @@
  * @property {string} from - Phone number (e.g. "whatsapp:+5491112345678")
  * @property {string} body - Message text
  * @property {string} messageId - Provider message ID (e.g. Twilio MessageSid)
+ * @property {string|null} profileName - Contact's display name from WhatsApp (e.g. "Nahuel Schmidt")
  */
 
 /**
