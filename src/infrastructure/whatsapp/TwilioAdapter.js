@@ -49,7 +49,9 @@ export const TwilioAdapter = {
   validateWebhook(req) {
     if (env.NODE_ENV === 'development') return true
     const signature = req.headers['x-twilio-signature']
-    const url = `${req.protocol}://${req.get('host')}${req.originalUrl}`
+    // Use x-forwarded-proto when behind Railway's reverse proxy (req.protocol would be 'http')
+    const proto = req.headers['x-forwarded-proto'] || req.protocol
+    const url = `${proto}://${req.get('host')}${req.originalUrl}`
     return twilio.validateRequest(env.TWILIO_AUTH_TOKEN, signature, url, req.body)
   },
 }

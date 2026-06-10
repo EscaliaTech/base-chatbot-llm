@@ -17,6 +17,9 @@ export async function createApp() {
   const app = express()
   const server = createServer(app)
 
+  // Trust Railway's reverse proxy so req.protocol === 'https'
+  app.set('trust proxy', 1)
+
   // Middleware
   app.use(express.json())
   app.use(express.urlencoded({ extended: true }))
