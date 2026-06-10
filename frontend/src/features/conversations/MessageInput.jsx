@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from 'react'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import hotkeys from 'hotkeys-js'
 import { LayoutTemplate, SendHorizonal } from 'lucide-react'
+import { AnimatePresence, motion } from 'motion/react'
 import { conversationsApi } from '../../api/endpoints/conversations.js'
 import { TemplatesPanel } from './TemplatesPanel.jsx'
 
@@ -48,9 +49,20 @@ export function MessageInput({ conversationId }) {
 
   return (
     <div className="border-t border-neutral-200 bg-white">
-      {showTemplates && (
-        <TemplatesPanel onSelect={handleTemplateSelect} onClose={() => setShowTemplates(false)} />
-      )}
+      <AnimatePresence>
+        {showTemplates && (
+          <motion.div
+            key="templates"
+            initial={{ opacity: 0, y: 8, scaleY: 0.96 }}
+            animate={{ opacity: 1, y: 0, scaleY: 1 }}
+            exit={{ opacity: 0, y: 8, scaleY: 0.96 }}
+            transition={{ duration: 0.15, ease: 'easeOut' }}
+            style={{ originY: 1 }}
+          >
+            <TemplatesPanel onSelect={handleTemplateSelect} onClose={() => setShowTemplates(false)} />
+          </motion.div>
+        )}
+      </AnimatePresence>
       <div className="flex items-end gap-2 p-3">
         <button
           onClick={() => setShowTemplates(prev => !prev)}
