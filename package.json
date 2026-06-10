@@ -5,14 +5,25 @@
   "type": "module",
   "main": "src/index.js",
   "scripts": {
-    "start": "node src/index.js",
-    "dev": "node --watch src/index.js"
+    "start": "node src/api/server.js",
+    "dev": "node --watch src/api/server.js",
+    "db:generate": "drizzle-kit generate",
+    "db:migrate": "drizzle-kit migrate"
   },
   "dependencies": {
+    "bcryptjs": "^3.0.3",
+    "bullmq": "^5.78.0",
+    "cookie-parser": "^1.4.7",
     "dotenv": "^16.4.0",
+    "drizzle-kit": "^0.31.10",
+    "drizzle-orm": "^0.45.2",
     "express": "^4.21.0",
     "groq-sdk": "^0.8.0",
+    "ioredis": "^5.11.1",
+    "jsonwebtoken": "^9.0.3",
+    "postgres": "^3.4.9",
     "twilio": "^5.4.0",
-    "ws": "^8.21.0"
+    "ws": "^8.21.0",
+    "zod": "^4.4.3"
   }
 }
