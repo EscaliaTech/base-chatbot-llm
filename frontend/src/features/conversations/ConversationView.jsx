@@ -7,9 +7,9 @@ import { ConversationStatusBadge } from './ConversationStatusBadge.jsx'
 import { StatusTransition } from './StatusTransition.jsx'
 
 export function ConversationView({ conversationId, onBack }) {
-  const { data: messages = [], isLoading } = useQuery({
-    queryKey: ['messages', conversationId],
-    queryFn: () => conversationsApi.getMessages(conversationId).then(r => r.data),
+  const { data: sessions = [], isLoading } = useQuery({
+    queryKey: ['history', conversationId],
+    queryFn: () => conversationsApi.getHistory(conversationId).then(r => r.data),
     enabled: !!conversationId,
   })
 
@@ -39,7 +39,7 @@ export function ConversationView({ conversationId, onBack }) {
         </div>
 
         {/* Messages */}
-        <MessageThread messages={messages} isLoading={isLoading} />
+        <MessageThread sessions={sessions} isLoading={isLoading} />
 
         {/* Input */}
         <MessageInput conversationId={conversationId} />

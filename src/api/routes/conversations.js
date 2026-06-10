@@ -41,6 +41,42 @@ export function createConversationsRouter() {
     }
   })
 
+  // GET /api/conversations/:id/history — all sessions for this contact, with messages
+  router.get('/:id/history', async (req, res) => {
+    try {
+      const [conv] = await db.select().from(conversations).where(eq(conversations.id, req.params.id))
+      if (!conv) return res.status(404).json({ error: 'Not found' })
+
+      const contactConvs = await db
+        .select()
+        .from(conversations)
+        .where(eq(conversations.contactId, conv.contactId))
+        .orderBy(conversations.createdAt)
+
+      const sessions = await Promise.all(
+        contactConvs.map(async (c) => {
+          const msgs = await db
+            .select()
+            .from(messages)
+            .where(eq(messages.conversationId, c.id))
+            .orderBy(messages.createdAt)
+          return {
+            conversationId: c.id,
+            status: c.status,
+            createdAt: c.createdAt,
+            isCurrent: c.id === req.params.id,
+            messages: msgs,
+          }
+        })
+      )
+
+      res.json(sessions)
+    } catch (err) {
+      console.error(err)
+      res.status(500).json({ error: 'Internal server error' })
+    }
+  })
+
   // GET /api/conversations/:id/messages
   router.get('/:id/messages', async (req, res) => {
     try {

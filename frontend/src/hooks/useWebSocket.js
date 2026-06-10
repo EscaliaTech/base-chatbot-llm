@@ -42,6 +42,7 @@ export function useWebSocket() {
       switch (msg.type) {
         case 'new_message':
           queryClient.invalidateQueries({ queryKey: ['messages', msg.data.conversationId] })
+          queryClient.invalidateQueries({ queryKey: ['history'] })
           queryClient.invalidateQueries({ queryKey: ['conversations'] })
           break
         case 'conversation_transferred':
