@@ -24,6 +24,13 @@ export function WelcomeDialog({ open, onClose }) {
     onClose()
   }
 
+  useEffect(() => {
+    if (!open) return
+    function onKey(e) { if (e.key === 'Escape') dismiss() }
+    window.addEventListener('keydown', onKey)
+    return () => window.removeEventListener('keydown', onKey)
+  }, [open])
+
   if (!open) return null
 
   return (
