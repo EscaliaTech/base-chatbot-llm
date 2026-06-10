@@ -3,6 +3,7 @@ import { useConversationStore } from '../../stores/conversationStore.js'
 import { ConversationList } from './ConversationList.jsx'
 import { ConversationView } from './ConversationView.jsx'
 import { useWsStore } from '../../stores/wsStore.js'
+import { WelcomeDialog } from '../auth/WelcomeDialog.jsx'
 
 export function CRMLayout() {
   useWebSocket()
@@ -11,6 +12,7 @@ export function CRMLayout() {
 
   return (
     <div className="flex h-screen bg-neutral-50">
+      <WelcomeDialog />
       {/* Sidebar */}
       <aside className={`w-80 shrink-0 border-r border-neutral-200 bg-white flex flex-col ${activeConversationId ? 'hidden md:flex' : 'flex'}`}>
         <div className="flex items-center justify-between px-4 py-3 border-b border-neutral-200">
