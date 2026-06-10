@@ -8,7 +8,7 @@ const groq = new Groq({ apiKey: env.GROQ_API_KEY })
  * System prompt for intent classification.
  * Instructs the model to always respond with a strict JSON object.
  */
-const SYSTEM_PROMPT = `Sos un asistente virtual de Escalia, una empresa de paquetería y envíos.
+const SYSTEM_PROMPT = `Sos un asistente virtual de Grupo GFH, una empresa de paquetería y envíos.
 Tu trabajo es entender lo que el usuario necesita y responder en formato JSON.
 
 SIEMPRE respondé en JSON válido con esta estructura exacta:

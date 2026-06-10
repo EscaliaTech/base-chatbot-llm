@@ -35,7 +35,7 @@ export function AdminLayout() {
       {/* Top nav */}
       <header className="bg-white border-b border-neutral-200 px-6 py-3 flex items-center justify-between">
         <div className="flex items-center gap-6">
-          <span className="font-semibold text-sm">Escalia Admin</span>
+          <span className="font-semibold text-sm">GFH Admin</span>
           <nav className="flex items-center gap-1">
             {visibleTabs.map(tab => (
               <button

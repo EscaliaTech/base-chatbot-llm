@@ -1,7 +1,7 @@
 {
-  "name": "escalia-whatsapp-bot",
+  "name": "gfh-whatsapp-bot",
   "version": "1.0.0",
-  "description": "Bot de WhatsApp para Escalia - empresa de paqueteria y envios",
+  "description": "Bot de WhatsApp para Grupo GFH - empresa de paqueteria y envios",
   "type": "module",
   "main": "src/index.js",
   "scripts": {

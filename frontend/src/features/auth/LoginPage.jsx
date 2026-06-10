@@ -28,7 +28,7 @@ export function LoginPage() {
     <div className="min-h-screen flex items-center justify-center bg-neutral-50">
       <div className="w-full max-w-sm space-y-6 p-8 bg-white rounded-xl border border-neutral-200 shadow-sm">
         <div className="space-y-1 text-center">
-          <h1 className="text-2xl font-semibold tracking-tight">Escalia CRM</h1>
+          <h1 className="text-2xl font-semibold tracking-tight">Grupo GFH CRM</h1>
           <p className="text-sm text-neutral-500">Ingresá con tu cuenta</p>
         </div>
 

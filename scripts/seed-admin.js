@@ -11,9 +11,9 @@ import { drizzle } from 'drizzle-orm/postgres-js'
 import postgres from 'postgres'
 import { users } from '../src/infrastructure/db/schema.js'
 
-const ADMIN_EMAIL    = process.env.ADMIN_EMAIL    || 'admin@escalia.com'
+const ADMIN_EMAIL    = process.env.ADMIN_EMAIL    || 'admin@grupogfh.com'
 const ADMIN_NAME     = process.env.ADMIN_NAME     || 'Administrador'
-const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || 'Escalia2024!'
+const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || 'GrupoGFH2024!'
 
 async function main() {
   if (!process.env.DATABASE_URL) {
