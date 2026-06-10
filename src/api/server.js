@@ -10,6 +10,7 @@ import { createAuthRouter } from './routes/auth.js'
 import { createConversationsRouter } from './routes/conversations.js'
 import { createAdminRouter } from './routes/admin.js'
 import { createMetricsRouter } from './routes/metrics.js'
+import { createDevWebhooksRouter } from './routes/devWebhooks.js'
 import { buildContainer } from '../container.js'
 
 export async function createApp() {
@@ -50,6 +51,9 @@ export async function createApp() {
   app.use('/api/conversations', createConversationsRouter())
   app.use('/api/admin', createAdminRouter())
   app.use('/api/metrics', createMetricsRouter())
+
+  // Dev webhook inspector (ngrok-style UI)
+  app.use('/dev/webhooks', createDevWebhooksRouter())
 
   // Health check
   app.get('/health', (req, res) => res.json({ ok: true, ts: new Date().toISOString() }))
