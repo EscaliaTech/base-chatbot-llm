@@ -32,7 +32,7 @@ export function createAuthRouter() {
       const expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)
       await db.insert(refreshTokens).values({ id: crypto.randomUUID(), userId: user.id, token: refreshToken, expiresAt })
 
-      res.cookie('refreshToken', refreshToken, { httpOnly: true, secure: true, sameSite: 'strict', maxAge: 7 * 24 * 60 * 60 * 1000 })
+      res.cookie('refreshToken', refreshToken, { httpOnly: true, secure: true, sameSite: 'none', maxAge: 7 * 24 * 60 * 60 * 1000 })
       res.json({ accessToken, user: { id: user.id, email: user.email, role: user.role, name: user.name } })
     } catch (err) {
       console.error(err)
@@ -55,7 +55,10 @@ export function createAuthRouter() {
       const newPayload = { userId: payload.userId, role: payload.role, name: payload.name }
       const accessToken = JWTService.generateAccessToken(newPayload)
 
-      res.json({ accessToken })
+      res.json({
+        accessToken,
+        user: { id: payload.userId, role: payload.role, name: payload.name },
+      })
     } catch {
       res.status(401).json({ error: 'Invalid refresh token' })
     }
