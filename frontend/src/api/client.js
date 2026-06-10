@@ -25,7 +25,8 @@ apiClient.interceptors.response.use(
   (res) => res,
   async (error) => {
     const originalRequest = error.config
-    if (error.response?.status === 401 && !originalRequest._retry) {
+    const isRefreshEndpoint = originalRequest.url?.includes('/api/auth/refresh')
+    if (error.response?.status === 401 && !originalRequest._retry && !isRefreshEndpoint) {
       originalRequest._retry = true
 
       if (isRefreshing) {
