@@ -6,7 +6,7 @@ import { useWsStore } from '../../stores/wsStore.js'
 import { WelcomeDialog, useWelcomeDialog } from '../auth/WelcomeDialog.jsx'
 import { useAuthStore } from '../../stores/authStore.js'
 import { authApi } from '../../api/endpoints/auth.js'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, Link } from 'react-router-dom'
 
 export function CRMLayout() {
   useWebSocket()
@@ -41,6 +41,18 @@ export function CRMLayout() {
             >
               QR
             </button>
+            {(user?.role === 'admin' || user?.role === 'supervisor') && (
+              <>
+                <span className="text-neutral-200">|</span>
+                <Link
+                  to="/admin"
+                  className="text-xs text-neutral-400 hover:text-neutral-700 transition-colors"
+                  title="Panel administrativo"
+                >
+                  Admin
+                </Link>
+              </>
+            )}
             <span className="text-neutral-200">|</span>
             <button
               onClick={handleLogout}
