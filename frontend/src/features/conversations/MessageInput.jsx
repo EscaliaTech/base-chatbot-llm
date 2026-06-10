@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from 'react'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import hotkeys from 'hotkeys-js'
+import { LayoutTemplate, SendHorizonal } from 'lucide-react'
 import { conversationsApi } from '../../api/endpoints/conversations.js'
 import { TemplatesPanel } from './TemplatesPanel.jsx'
 
@@ -53,10 +54,10 @@ export function MessageInput({ conversationId }) {
       <div className="flex items-end gap-2 p-3">
         <button
           onClick={() => setShowTemplates(prev => !prev)}
-          className="shrink-0 p-2 text-neutral-400 hover:text-neutral-700 rounded-md hover:bg-neutral-100 text-xs"
+          className={`shrink-0 p-2 rounded-md transition-colors ${showTemplates ? 'text-neutral-900 bg-neutral-100' : 'text-neutral-400 hover:text-neutral-700 hover:bg-neutral-100'}`}
           title="Plantillas (⌘T)"
         >
-          📋
+          <LayoutTemplate size={16} />
         </button>
         <textarea
           ref={textareaRef}
@@ -80,9 +81,10 @@ export function MessageInput({ conversationId }) {
         <button
           onClick={handleSend}
           disabled={!body.trim() || mutation.isPending}
-          className="shrink-0 rounded-md bg-neutral-900 text-white px-4 py-2 text-sm font-medium hover:bg-neutral-800 disabled:opacity-40 transition-colors"
+          className="shrink-0 rounded-md bg-neutral-900 text-white px-3 py-2 hover:bg-neutral-800 disabled:opacity-40 transition-colors"
+          title="Enviar (⌘Enter)"
         >
-          {mutation.isPending ? '...' : 'Enviar'}
+          <SendHorizonal size={16} />
         </button>
       </div>
     </div>
