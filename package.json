@@ -8,7 +8,8 @@
     "start": "node src/api/server.js",
     "dev": "node --watch src/api/server.js",
     "db:generate": "drizzle-kit generate",
-    "db:migrate": "drizzle-kit migrate"
+    "db:migrate": "drizzle-kit migrate",
+    "seed:admin": "node scripts/seed-admin.js"
   },
   "dependencies": {
     "bcryptjs": "^3.0.3",
