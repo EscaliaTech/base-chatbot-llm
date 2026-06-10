@@ -6,7 +6,7 @@ const WA_TEXT = 'join symbol-line'
 const WA_URL = `https://wa.me/${WA_NUMBER}?text=${encodeURIComponent(WA_TEXT)}`
 const SESSION_KEY = 'mvp_welcome_shown'
 
-export function WelcomeDialog() {
+export function useWelcomeDialog() {
   const [open, setOpen] = useState(false)
 
   useEffect(() => {
@@ -15,9 +15,13 @@ export function WelcomeDialog() {
     }
   }, [])
 
+  return { open, show: () => setOpen(true), hide: () => setOpen(false) }
+}
+
+export function WelcomeDialog({ open, onClose }) {
   function dismiss() {
     sessionStorage.setItem(SESSION_KEY, '1')
-    setOpen(false)
+    onClose()
   }
 
   if (!open) return null
@@ -26,6 +30,7 @@ export function WelcomeDialog() {
     <div
       className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm"
       onClick={(e) => { if (e.target === e.currentTarget) dismiss() }}
+      role="dialog"
     >
       <div className="relative bg-white rounded-2xl shadow-2xl w-full max-w-lg mx-4 overflow-hidden">
         {/* Header */}
